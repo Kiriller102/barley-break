@@ -5,6 +5,7 @@
 #include <Qt>
 
 BarleyBreak BB;
+bool endGame = false;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::BarleyBreak) {
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->label->setFont(font);
     ui->timelabel->setFont(font);
     ui->pole->setFont(font2);
+
     seconds = 0;
     minutes = 0;
     hours = 0;
@@ -30,7 +32,6 @@ MainWindow::~MainWindow() {
 
 void MainWindow::showDesck() {
     ui->label->setText("moves: " + QString::number(BB.GetMoves()));
-
     for (int i = 0; i < 4; i++) {
         for (int  j = 0; j < 4; j++) {
             if (BB.GetValue(i,j) == 0) {
@@ -73,7 +74,10 @@ void MainWindow::on_actionNew_Game_triggered() {
 }
 
 void MainWindow::TimerSlot() {
-    seconds++;
+    if (BB.IsFinished())
+        endGame = true;
+    if (!endGame)
+        seconds++;
     if (seconds == 60) {
         minutes++;
         seconds = 0;
@@ -84,6 +88,7 @@ void MainWindow::TimerSlot() {
         seconds = 0;
     }
     ui->timelabel->setText("Timer: " + QString::number(hours) + ":" + QString::number(minutes) + ":" + QString::number(seconds));
+
 }
 
 
